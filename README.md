@@ -103,6 +103,14 @@ devopsfetch -t '1 hour ago'
 
 ```
 
+DevOpsFetch supports time-based queries to show system activities within specific date ranges:
+
+- To show activities for a specific date:
+
+  ```bash
+  devopsfetch --time start-date (end-date) optional
+  ```
+
 ## Installation Detailed Process
 
 The `install.sh` script performs the following actions:
