@@ -16,11 +16,14 @@ display_help() {
 
 # Function to display ports
 display_ports() {
+    echo "USER PORT SERVICE"
     if [ -z "$1" ]; then
-        ss -tuln | column -t
+        ss -tuln | awk 'NR>1 {split($5, a, ":"); print a[length(a)]}' | sort -u | while read port; do
+            lsof -i :$port -sTCP:LISTEN -n -P 2>/dev/null | awk 'NR>1 {print $3, $9, $1}' | awk -v p=$port '{split($2, a, ":"); if (a[length(a)] == p) print $1, p, $3}' | sort -u
+        done
     else
-        ss -tuln | grep ":$1 " | column -t
-    fi
+        lsof -i :$1 -sTCP:LISTEN -n -P 2>/dev/null | awk 'NR>1 {print $3, $9, $1}' | awk -v p=$1 '{split($2, a, ":"); if (a[length(a)] == p) print $1, p, $3}' | sort -u
+    fi | column -t
 }
 
 # Function to display Docker info
